@@ -35,7 +35,8 @@ def tissueAnnotations = annotations.findAll { annotation ->
 }
 
 // Define the output directory
-def outputDir = '/Users/annie/Desktop/qupath/export'  // Update this to your desired path
+// NEEDS TO BE MANUALLY CHANGED
+def outputDir = '/Users/annie/Desktop/qupath/export'  
 
 // Ensure output directory exists
 def outputDirFile = new File(outputDir)
