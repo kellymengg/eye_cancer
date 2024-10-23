@@ -1,0 +1,103 @@
+from PIL import Image
+import matplotlib.pyplot as plt
+from skimage import filters, measure
+import numpy as np
+from scipy.ndimage import gaussian_filter
+import os
+
+img_path = "images3"
+
+#smoothed image
+for i in os.listdir(img_path):
+    image = "images3\\" + i
+        
+    img = Image.open(image)
+    img = np.array(img, dtype = np.uint8)
+    
+    #smoothing
+    smoothed_image = gaussian_filter(img, sigma=1)
+    segmented_image = smoothed_image < 600
+
+    #thresholding
+    from skimage.filters import threshold_otsu
+    
+    #otsu's
+    threshold_value = threshold_otsu(smoothed_image)
+    print("Otsu's Threshold:", threshold_value)
+
+    #segment the image
+    segmented_image = smoothed_image < threshold_value
+    
+    unmasked_image = np.zeros_like(img)
+    unmasked_image[segmented_image] = img[segmented_image]
+    plt.imshow(smoothed_image, cmap='gray')
+    plt.title("Smoothed Image")
+    plt.colorbar()
+    plt.show()
+    
+    final_image = Image.fromarray(smoothed_image)
+    final_image.save(f"smoothed_images\\smoothed_{i}", format = "TIFF")
+
+#segmented image
+for i in os.listdir(img_path):
+    image = "images3\\" + i
+        
+    img = Image.open(image)
+    img = np.array(img, dtype = np.uint8)
+    
+    #smoothing
+    smoothed_image = gaussian_filter(img, sigma=1)
+    segmented_image = smoothed_image < 600
+
+    #thresholding
+    from skimage.filters import threshold_otsu
+    
+    #otsu's
+    threshold_value = threshold_otsu(smoothed_image)
+    print("Otsu's Threshold:", threshold_value)
+
+    #segment the image
+    segmented_image = smoothed_image < threshold_value
+    
+    segmented_image_display = segmented_image.astype(np.uint16) * 255
+    
+    unmasked_image = np.zeros_like(img)
+    unmasked_image[segmented_image] = img[segmented_image]
+    plt.imshow(segmented_image_display, cmap='gray')
+    plt.title("Segmented Image")
+    plt.colorbar()
+    plt.show()
+    
+    final_image = Image.fromarray(segmented_image)
+    final_image.save(f"smoothed_images\\segmented_{i}", format = "TIFF")
+
+#unmasked segmented regions
+for i in os.listdir(img_path):
+    image = "images3\\" + i
+        
+    img = Image.open(image)
+    img = np.array(img, dtype = np.uint8)
+    
+    #smoothing
+    smoothed_image = gaussian_filter(img, sigma=1)
+    segmented_image = smoothed_image < 600
+
+    #thresholding
+    from skimage.filters import threshold_otsu
+    
+    #otsu's
+    threshold_value = threshold_otsu(smoothed_image)
+    print("Otsu's Threshold:", threshold_value)
+
+    #segment the image
+    segmented_image = smoothed_image < threshold_value
+        
+    unmasked_image = np.zeros_like(img)
+    unmasked_image[segmented_image] = img[segmented_image]
+    plt.imshow(unmasked_image, cmap='gray')
+    plt.title("Unmasked and Segmented Regions")
+    plt.colorbar()
+    plt.show()
+    
+    final_image = Image.fromarray(unmasked_image)
+    final_image.save(f"smoothed_images\\unmasked_{i}", format = "TIFF")
