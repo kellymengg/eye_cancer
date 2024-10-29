@@ -1,0 +1,94 @@
+from PIL import Image
+import matplotlib.pyplot as plt
+from skimage import filters, measure, exposure
+import numpy as np
+from scipy.ndimage import gaussian_filter
+import os
+
+img_path = "images3"
+
+#unmasked segmented regions
+for i in os.listdir(img_path):
+    image = "images3\\" + i
+        
+    img = Image.open(image)
+    img = np.array(img, dtype = np.uint8)
+    
+    #smoothing
+    smoothed_image = gaussian_filter(img, sigma=1)
+    segmented_image = smoothed_image < 600
+
+    #thresholding
+    from skimage.filters import threshold_otsu
+    
+    #image processing
+    p_begin, p_end = np.percentile(smoothed_image, (5, 95))
+    stretched_image = exposure.rescale_intensity(smoothed_image, in_range=(p_begin, p_end))
+    
+    
+    #otsu's
+    threshold_value = threshold_otsu(stretched_image)
+    print("Otsu's Threshold:", threshold_value)
+
+    #segment the image
+
+    segmented_image = stretched_image < threshold_value
+    unmasked_image = np.zeros_like(img)
+    unmasked_image[segmented_image] = img[segmented_image]
+    plt.imshow(unmasked_image, cmap='gray')
+    plt.title("Unmasked and Segmented Regions")
+    plt.colorbar()
+    plt.show()
+    
+    final_image = Image.fromarray(unmasked_image)
+    final_image.save(f"images3\\unmasked_{i}", format = "TIFF")
+
+img_path = "images3"
+
+#unmasked segmented regions
+for i in os.listdir(img_path):
+    image = "images3\\" + i
+        
+    img = Image.open(image)
+    img = np.array(img, dtype = np.uint8)
+    
+    #smoothing
+    smoothed_image = gaussian_filter(img, sigma=1)
+    segmented_image = smoothed_image < 600
+
+    #thresholding
+    from skimage.filters import threshold_otsu
+    
+    #image processing
+    #p_begin, p_end = np.percentile(smoothed_image, (.1, 99.9))
+    #stretched_image = exposure.rescale_intensity(smoothed_image, in_range=(p_begin, p_end))
+    
+    
+    #otsu's
+    threshold_value = 140
+    print("Otsu's Threshold:", threshold_value)
+
+    #segment the image
+
+    segmented_image = stretched_image < threshold_value
+    unmasked_image = np.zeros_like(img)
+    unmasked_image[segmented_image] = img[segmented_image]
+    plt.imshow(unmasked_image, cmap='gray')
+    plt.title("Unmasked and Segmented Regions")
+    plt.colorbar()
+    plt.show()
+    
+    final_image = Image.fromarray(unmasked_image)
+    final_image.save(f"smoothed_images_wk4\\unmasked_{i}", format = "TIFF")
+
+from skimage import exposure, io
+import numpy as np
+
+# Load the image, keeping the original range intact
+image = io.imread('smoothed_images_wk4/unmasked_unmasked_HighQualitySample2_modified.tif')
+
+# Apply gamma correction
+brighter_image = exposure.adjust_gamma(image, gamma=0.5)
+
+# Save the brighter image as a TIFF, ensuring maximum data is retained
+io.imsave('brighter_image.tif', brighter_image.astype(image.dtype))
