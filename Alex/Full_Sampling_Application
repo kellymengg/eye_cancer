@@ -1,3 +1,10 @@
+###adjustments
+
+###Classification relies on hardcoded RGB value ranges to classify regions as epithelium, stroma, or background
+###In the original code, regions within the epithelium are color-coded based on purple concentration
+###This code preserves the original image colors for the epithelium
+
+
 import cv2
 import numpy as np
 import random
