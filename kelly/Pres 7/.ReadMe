@@ -1,0 +1,7 @@
+'''
+This code should complete the process of rotating / flipping / translating. 
+it also attempts patching across the different stains.
+the images used are in two folders that are too big to put in github. the first is the same folder in my Pres 6.
+it is a folder called patient 1, and it is the three different stains of h1810898A ROI_1.
+the second folder contains the same images, but i manually flipped the melan-a stain to test if flipping works.
+'''
